@@ -1,0 +1,33 @@
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  #printable-content {
+    background: #ffffff !important;
+    color: #111827 !important;
+    padding: 0;
+    margin: 0;
+  }
+
+  #printable-content * {
+    box-shadow: none !important;
+  }
+
+  .question-paper-header,
+  .question-paper-summary,
+  .page-break,
+  .break-inside-avoid {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .page-break {
+    page-break-before: auto;
+  }
+}

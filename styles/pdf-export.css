@@ -1,0 +1,27 @@
+/* html2canvas-safe palette for question paper capture (screen unchanged unless .pdf-export-mode is set) */
+
+#printable-content.pdf-export-mode {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+}
+
+#printable-content.pdf-export-mode,
+#printable-content.pdf-export-mode * {
+  --background: #ffffff;
+  --foreground: #111827;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --muted: #f3f4f6;
+  --muted-foreground: #4b5563;
+  --border: #e5e7eb;
+  --color-background: #ffffff;
+  --color-foreground: #111827;
+  --color-muted-foreground: #4b5563;
+  --color-border: #e5e7eb;
+}
+
+#printable-content.pdf-export-mode * {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
