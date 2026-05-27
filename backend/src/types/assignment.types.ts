@@ -47,6 +47,9 @@ export interface QuestionPaper {
 export interface SerializedAssignment {
   id: string;
   title: string;
+  schoolName?: string;
+  subject?: string;
+  className?: string;
   createdDate: string;
   dueDate: string;
   questionTypes: QuestionType[];

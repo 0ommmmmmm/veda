@@ -8,6 +8,9 @@ import type {
 
 export interface IAssignment extends Document {
   title: string;
+  schoolName?: string;
+  subject?: string;
+  className?: string;
   createdDate: Date;
   dueDate: Date;
   questionTypes: QuestionType[];
@@ -40,6 +43,9 @@ const questionTypeSchema = new Schema(
 const assignmentSchema = new Schema<IAssignment>(
   {
     title: { type: String, required: true },
+    schoolName: { type: String },
+    subject: { type: String },
+    className: { type: String },
     createdDate: { type: Date, required: true, default: Date.now },
     dueDate: { type: Date, required: true },
     questionTypes: { type: [questionTypeSchema], required: true },

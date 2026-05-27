@@ -32,6 +32,9 @@ export async function createAssignment(
 
   const assignment = await Assignment.create({
     title: input.title,
+    schoolName: input.schoolName,
+    subject: input.subject,
+    className: input.className,
     dueDate: input.dueDate,
     createdDate: new Date(),
     questionTypes,

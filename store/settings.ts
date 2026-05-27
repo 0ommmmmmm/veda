@@ -9,6 +9,8 @@ export interface UserSettings {
   email: string
   schoolName: string
   location: string
+  subject: string
+  className: string
 
   theme: ThemePreference
   notificationsEnabled: boolean
@@ -27,6 +29,8 @@ const DEFAULT_SETTINGS: UserSettings = {
   email: 'john.doe@school.com',
   schoolName: 'Delhi Public School',
   location: 'Bokaro Steel City',
+  subject: 'English',
+  className: '5th',
   theme: 'light',
   notificationsEnabled: true,
   defaultDifficulty: 'Moderate',

@@ -16,12 +16,17 @@ import {
 import { useAssignments } from '@/hooks/useAssignments'
 import { toCreatePayload } from '@/lib/assignmentUtils'
 import { QuestionType } from '@/lib/types'
+import { useSettingsStore } from '@/store/settings'
 
 export function CreateAssignmentForm() {
   const router = useRouter()
   const { createAssignment, error: storeError } = useAssignments()
+  const settings = useSettingsStore((s) => s.settings)
 
   const [title, setTitle] = useState('')
+  const [schoolName, setSchoolName] = useState(settings.schoolName || '')
+  const [subject, setSubject] = useState(settings.subject || '')
+  const [className, setClassName] = useState(settings.className || '')
   const [dueDate, setDueDate] = useState<Date | null>(null)
   const [questionTypes, setQuestionTypes] = useState<QuestionType[]>([
     {
@@ -100,6 +105,9 @@ export function CreateAssignmentForm() {
       const assignment = await createAssignment(
         toCreatePayload({
           title: title.trim(),
+          schoolName: schoolName.trim() || undefined,
+          subject: subject.trim() || undefined,
+          className: className.trim() || undefined,
           dueDate: dueDate!,
           questionTypes,
           instructions: instructions.trim() || undefined,
@@ -141,6 +149,42 @@ export function CreateAssignmentForm() {
               {errors.title && (
                 <p className="text-xs text-red-500 mt-2">{errors.title}</p>
               )}
+            </div>
+
+            <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-[#111827] mb-2">
+                  School Name
+                </label>
+                <Input
+                  value={schoolName}
+                  onChange={(e) => setSchoolName(e.target.value)}
+                  placeholder="e.g., Delhi Public School"
+                  className="rounded-xl border-[#d1d5db] bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#111827] mb-2">
+                  Subject
+                </label>
+                <Input
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  placeholder="e.g., English"
+                  className="rounded-xl border-[#d1d5db] bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#111827] mb-2">
+                  Class
+                </label>
+                <Input
+                  value={className}
+                  onChange={(e) => setClassName(e.target.value)}
+                  placeholder="e.g., 5th"
+                  className="rounded-xl border-[#d1d5db] bg-white"
+                />
+              </div>
             </div>
 
             {/* File Upload */}

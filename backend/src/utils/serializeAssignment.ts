@@ -10,6 +10,9 @@ export function serializeAssignment(
   const serialized: SerializedAssignment = {
     id: doc._id.toString(),
     title: doc.title,
+    schoolName: doc.schoolName,
+    subject: doc.subject,
+    className: doc.className,
     createdDate: doc.createdDate.toISOString(),
     dueDate: doc.dueDate.toISOString(),
     questionTypes: doc.questionTypes,

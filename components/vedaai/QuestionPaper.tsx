@@ -16,6 +16,7 @@ import {
 } from '@/lib/pdfExport'
 import { StudentInfoSection } from './StudentInfoSection'
 import { SectionBlock } from './SectionBlock'
+import { useSettingsStore } from '@/store/settings'
 
 interface QuestionPaperProps {
   assignment: Assignment
@@ -67,6 +68,7 @@ export function QuestionPaper({
   questionPaper,
 }: QuestionPaperProps) {
   const contentRef = useRef<HTMLDivElement>(null)
+  const settings = useSettingsStore((s) => s.settings)
 
   const totalQuestions =
     questionPaper?.totalQuestions ?? assignment.totalQuestions
@@ -162,6 +164,16 @@ export function QuestionPaper({
         <StudentInfoSection
           studentInfo={studentInfo}
           title={assignment.title}
+          schoolName={
+            assignment.schoolName ||
+            settings.schoolName ||
+            'School Name'
+          }
+          subjectLine={`Subject: ${
+            assignment.subject || settings.subject || 'Subject'
+          } | Class: ${
+            assignment.className || (assignment as any).grade || (assignment as any).class || settings.className || 'Class'
+          }`}
           assignmentTitle={questionPaper?.title ?? assignment.title}
           totalMarks={totalMarks}
           totalQuestions={totalQuestions}

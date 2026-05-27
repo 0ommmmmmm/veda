@@ -9,6 +9,9 @@ import type {
 export interface AssignmentApiResponse {
   id: string
   title: string
+  schoolName?: string
+  subject?: string
+  className?: string
   createdDate: string
   dueDate: string
   questionTypes: QuestionType[]
@@ -26,6 +29,9 @@ export function normalizeAssignment(raw: AssignmentApiResponse): Assignment {
   return {
     id: raw.id,
     title: raw.title,
+    schoolName: raw.schoolName,
+    subject: raw.subject,
+    className: raw.className,
     createdDate: new Date(raw.createdDate),
     dueDate: new Date(raw.dueDate),
     questionTypes: raw.questionTypes,
@@ -42,12 +48,18 @@ export function normalizeAssignment(raw: AssignmentApiResponse): Assignment {
 
 export function toCreatePayload(input: {
   title: string
+  schoolName?: string
+  subject?: string
+  className?: string
   dueDate: Date
   questionTypes: QuestionType[]
   instructions?: string
 }): CreateAssignmentPayload {
   return {
     title: input.title,
+    ...(input.schoolName ? { schoolName: input.schoolName } : {}),
+    ...(input.subject ? { subject: input.subject } : {}),
+    ...(input.className ? { className: input.className } : {}),
     dueDate: input.dueDate.toISOString(),
     questionTypes: input.questionTypes.map((qt) => ({
       id: qt.id,

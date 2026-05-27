@@ -47,6 +47,9 @@ export interface QuestionPaper {
 export interface Assignment {
   id: string
   title: string
+  schoolName?: string
+  subject?: string
+  className?: string
   createdDate: Date
   dueDate: Date
   questionTypes: QuestionType[]
@@ -78,6 +81,9 @@ export interface FormData {
 
 export interface CreateAssignmentPayload {
   title: string
+  schoolName?: string
+  subject?: string
+  className?: string
   dueDate: string
   questionTypes: Array<{
     id?: string

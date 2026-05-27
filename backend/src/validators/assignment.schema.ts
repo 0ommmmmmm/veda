@@ -19,6 +19,9 @@ export const questionTypeSchema = z.object({
 export const createAssignmentSchema = z
   .object({
     title: z.string().min(3, 'Title must be at least 3 characters'),
+    schoolName: z.string().min(1).max(200).optional(),
+    subject: z.string().min(1).max(200).optional(),
+    className: z.string().min(1).max(100).optional(),
     dueDate: z.coerce.date().refine((date) => date > new Date(), {
       message: 'Due date must be in the future',
     }),

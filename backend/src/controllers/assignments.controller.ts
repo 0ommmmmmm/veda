@@ -92,8 +92,13 @@ export async function regenerateAssignmentHandler(
     throw new AppError(404, 'Assignment not found');
   }
 
-  await removeGenerationJob(id).catch(() => undefined);
-  await enqueueGeneration(id);
+  try {
+    await removeGenerationJob(id).catch(() => undefined);
+    await enqueueGeneration(id);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Failed to enqueue generation';
+    throw new AppError(503, message);
+  }
 
   const latest = await getAssignmentById(id);
   res.json(serializeAssignment(latest ?? assignment));

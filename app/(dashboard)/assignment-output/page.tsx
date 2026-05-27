@@ -1,7 +1,7 @@
 'use client'
 
-import { Suspense, useEffect, useRef } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { Suspense, useEffect, useRef, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Loader2, RefreshCw } from 'lucide-react'
 import { Topbar } from '@/components/vedaai/Topbar'
 import { QuestionPaper } from '@/components/vedaai/QuestionPaper'
@@ -17,11 +17,13 @@ import {
 } from '@/lib/socket'
 
 function AssignmentOutputContent() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const assignmentId = searchParams.get('id')
   const currentAssignment = useAssignmentStore((s) => s.currentAssignment)
   const regenerateAssignment = useAssignmentStore((s) => s.regenerateAssignment)
   const { toast } = useToast()
+  const [regenerating, setRegenerating] = useState(false)
 
   const assignment =
     currentAssignment?.id === assignmentId ? currentAssignment : null
@@ -128,22 +130,33 @@ function AssignmentOutputContent() {
     // Hard guards (requested)
     if (!assignmentId || assignmentId === '1') return
     if (generationStatus === 'queued' || generationStatus === 'processing') return
-    if (regenerateInFlightRef.current) return
+    if (regenerateInFlightRef.current || regenerating) return
 
     regenerateInFlightRef.current = true
+    setRegenerating(true)
     try {
-      await regenerateAssignment(assignmentId)
-    } catch {
+      const next = await regenerateAssignment(assignmentId)
+      // If backend ever returns a different id, navigate to it
+      if (next?.id && next.id !== assignmentId) {
+        router.push(`/assignment-output?id=${next.id}`)
+        return
+      }
+      // Otherwise refetch immediately so UI updates without waiting for polling/socket
+      await fetchAssignmentByIdRef.current(assignmentId, { silent: true })
+    } catch (err) {
       // Prevent unhandled rejection + show user-friendly message
+      const message =
+        err instanceof Error ? err.message : 'Regeneration failed'
       toast({
-        title: 'Backend unavailable',
-        description: 'Please start backend server.',
+        title: 'Regeneration failed',
+        description: message.includes('Failed to fetch')
+          ? 'Backend unavailable. Please start backend server.'
+          : message,
         variant: 'destructive',
       })
     } finally {
-      setTimeout(() => {
-        regenerateInFlightRef.current = false
-      }, 3000)
+      regenerateInFlightRef.current = false
+      setRegenerating(false)
     }
   }
 
@@ -172,10 +185,14 @@ function AssignmentOutputContent() {
                 e.stopPropagation()
                 void handleRegenerate()
               }}
-              disabled={!canRegenerate || regenerateInFlightRef.current || isInProgress}
+              disabled={!canRegenerate || regenerating || isInProgress}
               className="rounded-xl bg-[#111827] px-4 py-2 text-sm font-medium text-white hover:bg-[#1f2937] disabled:opacity-50 flex items-center gap-2"
             >
-              <RefreshCw className={`w-4 h-4 ${isInProgress ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`w-4 h-4 ${
+                  regenerating || isInProgress ? 'animate-spin' : ''
+                }`}
+              />
               Regenerate
             </button>
           </div>
