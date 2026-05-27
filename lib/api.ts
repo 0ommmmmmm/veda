@@ -5,7 +5,7 @@ import {
 import type { Assignment, CreateAssignmentPayload } from './types'
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+  process.env.NEXT_PUBLIC_API_URL || 'https://veda-pn8n.onrender.com'
 export class ApiError extends Error {
   constructor(
     public status: number,
