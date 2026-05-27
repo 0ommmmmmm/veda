@@ -58,7 +58,7 @@ Frontend runs on `http://localhost:3000`.
 
 See `backend/.env.example`.
 
-**Groq generation**
+**Groq generation** (Make sure to insert Groq api key)
 
 ```env
 AI_PROVIDER=groq
