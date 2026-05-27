@@ -1,6 +1,6 @@
 # VedaAI
 
-VedaAI is a full-stack assignment + question paper generator for teachers. Create an assignment with question distribution, then the backend generates a structured exam-style question paper using **Groq** (with safe mock fallback), persists it in **MongoDB**, and streams realtime generation status via **Socket.io** (with polling fallback on the frontend). The output can be exported as a PDF.
+VedaAI is a full-stack assignment. That Creates an assignment with question distribution, then the backend generates a structured exam-style question paper using **Groq** (with safe mock fallback), persists it in **MongoDB**, and streams realtime generation status via **Socket.io** (with polling fallback on the frontend). The output can be exported as a PDF.
 
 ## Tech stack
 
