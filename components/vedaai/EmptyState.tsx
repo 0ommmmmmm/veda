@@ -23,7 +23,6 @@ export function EmptyState() {
         <button
           type="button"
           onClick={() => {
-            console.log('[mobile] create assignment clicked')
             router.push('/create')
           }}
           className="inline-flex items-center gap-2 rounded-xl bg-[#111827] px-5 py-3 text-sm font-medium text-white hover:bg-[#1f2937]"

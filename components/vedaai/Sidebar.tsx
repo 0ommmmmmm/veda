@@ -51,7 +51,6 @@ export function Sidebar() {
         <button
           type="button"
           onClick={() => {
-            console.log('[desktop] create assignment clicked')
             router.push('/create')
           }}
           className="mb-6 flex items-center justify-center gap-2 rounded-2xl bg-[#111827] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#1f2937] w-full"

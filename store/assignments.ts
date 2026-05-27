@@ -138,14 +138,6 @@ export const useAssignmentStore = create<AssignmentStore>((set, get) => ({
     }
     try {
       const assignment = await api.getAssignmentById(id)
-      if (silent) {
-        console.log(
-          '[store] GET /api/assignments/:id (silent)',
-          id,
-          assignment.generationStatus,
-          assignment.questionPaper?.sections?.length ?? 0
-        )
-      }
       set((state) => ({
         currentAssignment: assignment,
         assignments: mergeAssignmentInList(state.assignments, assignment),

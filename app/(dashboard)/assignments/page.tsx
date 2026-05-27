@@ -62,7 +62,6 @@ export default function AssignmentsPage() {
             <button
               type="button"
               onClick={() => {
-                console.log('[mobile] create assignment clicked')
                 router.push('/create')
               }}
               className="inline-flex items-center gap-2 rounded-xl bg-[#111827] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1f2937]"

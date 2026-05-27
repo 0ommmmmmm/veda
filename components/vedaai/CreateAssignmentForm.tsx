@@ -67,7 +67,6 @@ export function CreateAssignmentForm() {
   }
 
   const handleAddQuestionType = () => {
-    console.log('[mobile] add question type clicked')
     setQuestionTypes([
       ...questionTypes,
       {
