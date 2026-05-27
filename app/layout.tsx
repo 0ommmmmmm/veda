@@ -12,7 +12,6 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: 'VedaAI - AI Assessment Creator',
   description: 'Create intelligent question papers and assignments powered by AI',
-  generator: 'v0.app',
   icons: {
     icon: [
       {

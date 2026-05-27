@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
@@ -34,8 +35,15 @@ export function Sidebar() {
     <>
       <aside className="hidden lg:flex fixed left-4 top-4 bottom-4 w-72 flex-col z-40 rounded-3xl bg-white shadow-sm border border-[#eef0f3] p-6">
         <div className="mb-8 flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#f05a3c] rounded-xl flex items-center justify-center">
-            <BookOpen className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 rounded-xl overflow-hidden bg-white border border-[#eef0f3] flex items-center justify-center">
+            <Image
+              src="/logo.png"
+              alt="Company logo"
+              width={40}
+              height={40}
+              className="object-contain"
+              priority
+            />
           </div>
           <h1 className="text-xl font-semibold text-[#111827]">VedaAI</h1>
         </div>
@@ -43,7 +51,7 @@ export function Sidebar() {
         <button
           type="button"
           onClick={() => {
-            console.log('[mobile] create assignment clicked')
+            console.log('[desktop] create assignment clicked')
             router.push('/create')
           }}
           className="mb-6 flex items-center justify-center gap-2 rounded-2xl bg-[#111827] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#1f2937] w-full"
