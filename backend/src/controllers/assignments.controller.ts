@@ -71,6 +71,22 @@ export async function regenerateAssignmentHandler(
   res: Response
 ): Promise<void> {
   const id = req.params.id as string;
+
+  // Hard guard: if already queued/processing, do NOT enqueue again
+  const existing = await getAssignmentById(id);
+  if (!existing) {
+    throw new AppError(404, 'Assignment not found');
+  }
+  if (existing.generationStatus === 'queued' || existing.generationStatus === 'processing') {
+    const updatedAt = existing.updatedAt ?? new Date(0);
+    const isStale = Date.now() - updatedAt.getTime() > 2 * 60 * 1000;
+    if (!isStale) {
+      res.json(serializeAssignment(existing));
+      return;
+    }
+    // stale queued/processing -> allow regeneration
+  }
+
   const assignment = await prepareRegeneration(id);
   if (!assignment) {
     throw new AppError(404, 'Assignment not found');

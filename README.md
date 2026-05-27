@@ -1,38 +1,100 @@
-# v0-vedaai-frontend-build
+# VedaAI
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+VedaAI is a full-stack assignment + question paper generator for teachers. Create an assignment with question distribution, then the backend generates a structured exam-style question paper using **Groq** (with safe mock fallback), persists it in **MongoDB**, and streams realtime generation status via **Socket.io** (with polling fallback on the frontend). The output can be exported as a PDF.
 
-## Built with v0
+## Tech stack
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+- **Frontend**: Next.js App Router, React, Tailwind CSS, Zustand
+- **Backend**: Node.js, Express, TypeScript, MongoDB (Mongoose), Redis + BullMQ, Socket.io
+- **AI**: Groq (JSON-only output validated via Zod), mock fallback
+- **PDF**: `html2canvas` + `jspdf` (printable area uses hex colors)
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_FwcZKXwX0PQQbiBw4amXdABsmkwe)
+## Architecture (high level)
 
-## Getting Started
+1. Frontend creates an assignment (`POST /api/assignments`)
+2. Backend enqueues a BullMQ job (or runs synchronously if the queue is unavailable)
+3. Worker generates a `questionPaper` (Groq or mock) and stores it on the assignment in MongoDB
+4. Backend emits Socket.io events (`generation:*`)
+5. Frontend listens for events and also polls while status is `queued`/`processing`
+6. Output page renders a clean exam-paper layout and supports PDF download and manual regenerate
 
-First, run the development server:
+## Local setup
+
+### 1) Start backend
 
 ```bash
+cd backend
+cp .env.example .env
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Backend runs on `http://localhost:4000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2) Start frontend
 
-## npm audit (do not use `--force`)
+Create `.env.local`:
 
-`npm audit` may report moderate PostCSS advisories bundled inside `next`. **Do not run `npm audit fix --force`** — it downgrades Next.js to 9.x and breaks this app. Wait for a Next.js release that bumps its bundled PostCSS, or accept the advisory until then.
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000
+```
 
-## Learn More
+Run:
 
-To learn more, take a look at the following resources:
+```bash
+npm install
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
-# veda
+Frontend runs on `http://localhost:3000`.
+
+## Environment variables
+
+### Frontend
+
+- `NEXT_PUBLIC_API_URL`: backend base URL (default `http://localhost:4000`)
+
+### Backend
+
+See `backend/.env.example`.
+
+**Groq generation**
+
+```env
+AI_PROVIDER=groq
+GROQ_API_KEY=your_key
+GROQ_MODEL=llama-3.1-8b-instant
+```
+
+If `AI_PROVIDER=groq` but `GROQ_API_KEY` is missing, the backend automatically falls back to mock generation.
+
+## Features implemented
+
+- Assignment creation with validation (title, due date, question types)
+- Realtime generation status (Socket.io) + polling fallback
+- MongoDB persistence for assignments and generated papers
+- BullMQ job processing with sync fallback when Redis is unavailable
+- Exam-paper rendering UI and PDF export (`id="printable-content"`)
+- Responsive UI (desktop sidebar + mobile bottom navigation)
+- Settings + profile (saved in localStorage via Zustand)
+
+## Build / production checks
+
+Frontend:
+
+```bash
+npm run build
+```
+
+Backend:
+
+```bash
+cd backend
+npm run build
+```
+
+## Deployment notes
+
+- Frontend can be deployed as a standard Next.js app.
+- Backend can be deployed as a Node service; ensure MongoDB and (optionally) Redis are available.
+- If Redis is unavailable, generation still works via synchronous fallback.

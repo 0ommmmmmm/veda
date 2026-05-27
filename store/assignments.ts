@@ -191,7 +191,6 @@ export const useAssignmentStore = create<AssignmentStore>((set, get) => ({
   },
 
   regenerateAssignment: async (id) => {
-    console.log('[store] POST /api/assignments/:id/regenerate', id)
     set({ loading: true, error: null })
     try {
       const assignment = await api.regenerateAssignment(id)

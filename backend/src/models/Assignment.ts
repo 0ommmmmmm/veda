@@ -19,6 +19,8 @@ export interface IAssignment extends Document {
   generationStatus: GenerationStatus;
   questionPaper?: QuestionPaper;
   generationError?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const questionTypeSchema = new Schema(
@@ -58,7 +60,7 @@ const assignmentSchema = new Schema<IAssignment>(
     questionPaper: { type: Schema.Types.Mixed },
     generationError: { type: String },
   },
-  { timestamps: false }
+  { timestamps: true }
 );
 
 export const Assignment = mongoose.model<IAssignment>('Assignment', assignmentSchema);

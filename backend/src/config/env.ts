@@ -9,9 +9,9 @@ const envSchema = z.object({
   REDIS_HOST: z.string().default('127.0.0.1'),
   REDIS_PORT: z.coerce.number().default(6379),
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
-  AI_PROVIDER: z.enum(['openai', 'mock']).default('mock'),
-  OPENAI_API_KEY: z.string().optional(),
-  OPENAI_MODEL: z.string().default('gpt-4o-mini'),
+  AI_PROVIDER: z.enum(['groq', 'mock']).default('mock'),
+  GROQ_API_KEY: z.string().optional(),
+  GROQ_MODEL: z.string().default('llama-3.1-8b-instant'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -24,11 +24,11 @@ if (!parsed.success) {
 export const env = parsed.data;
 
 export function isAiGenerationEnabled(): boolean {
-  return env.AI_PROVIDER === 'openai' && !!env.OPENAI_API_KEY?.trim();
+  return env.AI_PROVIDER === 'groq' && !!env.GROQ_API_KEY?.trim();
 }
 
 export function getGenerationModeLabel(): string {
   return isAiGenerationEnabled()
-    ? `openai (${env.OPENAI_MODEL})`
+    ? `groq (${env.GROQ_MODEL})`
     : 'mock fallback';
 }

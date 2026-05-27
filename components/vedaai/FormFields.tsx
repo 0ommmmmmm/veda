@@ -37,10 +37,10 @@ export function FileUploadBox({ onFileSelect }: FilUploadBoxProps) {
 
   return (
     <div
-      className={`border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${
+      className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer ${
         isDragActive
-          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30 shadow-md'
-          : 'border-gray-300 dark:border-gray-700 hover:border-blue-400 bg-gray-50 dark:bg-gray-900/50'
+          ? 'border-[#f05a3c] bg-[#fff7f4]'
+          : 'border-[#d1d5db] hover:border-[#f05a3c] bg-[#f9fafb]'
       }`}
       onDragEnter={handleDrag}
       onDragLeave={handleDrag}
@@ -48,12 +48,12 @@ export function FileUploadBox({ onFileSelect }: FilUploadBoxProps) {
       onDrop={handleDrop}
     >
       <div className="flex flex-col items-center gap-3">
-        <div className="text-5xl">📄</div>
+        <div className="text-4xl">📄</div>
         <div>
-          <p className="text-sm font-medium text-foreground">
+          <p className="text-sm font-medium text-[#111827]">
             Drag and drop your file here
           </p>
-          <p className="text-xs text-muted-foreground">or click to select</p>
+          <p className="text-xs text-[#6b7280]">or click to select</p>
         </div>
       </div>
     </div>
@@ -76,7 +76,7 @@ export function DueDateField({ value, onChange, error }: DueDateFieldProps) {
 
   return (
     <div>
-      <label className="block text-sm font-medium text-foreground mb-3">
+      <label className="block text-sm font-medium text-[#111827] mb-2">
         <Calendar className="w-4 h-4 inline mr-2" />
         Due Date
       </label>
@@ -84,7 +84,7 @@ export function DueDateField({ value, onChange, error }: DueDateFieldProps) {
         type="date"
         value={dateValue}
         onChange={handleChange}
-        className="glass-input"
+        className="w-full rounded-xl border border-[#d1d5db] bg-white px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#f05a3c]"
       />
       {error && <p className="text-xs text-red-500 mt-2">{error}</p>}
     </div>
@@ -103,9 +103,9 @@ export function QuestionTypeRow({
   onRemove,
 }: QuestionTypeRowProps) {
   return (
-    <div className="glass-card flex items-end gap-4">
+    <div className="rounded-2xl border border-[#e5e7eb] bg-[#fafafa] p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
       <div className="flex-1">
-        <label className="block text-sm font-medium text-foreground mb-2">
+        <label className="block text-sm font-medium text-[#111827] mb-2">
           Question Type
         </label>
         <select
@@ -113,7 +113,7 @@ export function QuestionTypeRow({
           onChange={(e) =>
             onUpdate(questionType.id, { type: e.target.value as any })
           }
-          className="glass-input"
+          className="w-full rounded-xl border border-[#d1d5db] bg-white px-3 py-2.5 text-sm text-[#111827] outline-none"
         >
           <option value="MCQ">Multiple Choice</option>
           <option value="Short Answer">Short Answer</option>
@@ -125,7 +125,7 @@ export function QuestionTypeRow({
       </div>
 
       <div className="flex-1">
-        <label className="block text-sm font-medium text-foreground mb-2">
+        <label className="block text-sm font-medium text-[#111827] mb-2">
           Number of Questions
         </label>
         <Input
@@ -135,12 +135,12 @@ export function QuestionTypeRow({
           onChange={(e) =>
             onUpdate(questionType.id, { count: parseInt(e.target.value) || 0 })
           }
-          className="glass-input"
+          className="rounded-xl border-[#d1d5db] bg-white"
         />
       </div>
 
       <div className="flex-1">
-        <label className="block text-sm font-medium text-foreground mb-2">
+        <label className="block text-sm font-medium text-[#111827] mb-2">
           Marks per Question
         </label>
         <Input
@@ -152,15 +152,16 @@ export function QuestionTypeRow({
               marksPerQuestion: parseInt(e.target.value) || 0,
             })
           }
-          className="glass-input"
+          className="rounded-xl border-[#d1d5db] bg-white"
         />
       </div>
 
       <Button
+        type="button"
         variant="outline"
         size="icon"
         onClick={() => onRemove(questionType.id)}
-        className="border-black/5 dark:border-white/10 text-foreground hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-all"
+        className="self-end border-[#e5e7eb] text-[#6b7280] hover:bg-red-50 hover:text-red-600 rounded-xl"
       >
         <Trash2 className="w-4 h-4" />
       </Button>
@@ -179,14 +180,14 @@ export function InstructionsTextarea({
 }: InstructionsTextareaProps) {
   return (
     <div>
-      <label className="block text-sm font-medium text-foreground mb-3">
+      <label className="block text-sm font-medium text-[#111827] mb-2">
         Additional Instructions (Optional)
       </label>
       <Textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Add any special instructions for the assignment..."
-        className="glass-input min-h-24"
+        className="min-h-24 rounded-xl border border-[#d1d5db] bg-white"
       />
     </div>
   )
@@ -208,28 +209,31 @@ export function NavigationButtons({
   isSubmitting = false,
 }: NavigationButtonsProps) {
   return (
-    <div className="flex gap-3 justify-end">
+    <div className="flex gap-3 justify-between sm:justify-end">
       {step > 1 && onPrevious && (
         <Button
+          type="button"
           variant="outline"
           onClick={onPrevious}
-          className="gradient-btn gradient-btn-secondary"
+          className="rounded-xl border-[#d1d5db]"
         >
           Previous
         </Button>
       )}
       {onNext ? (
         <Button
+          type="button"
           onClick={onNext}
-          className="gradient-btn gradient-btn-primary"
+          className="rounded-xl bg-[#111827] text-white hover:bg-[#1f2937]"
         >
           Next
         </Button>
       ) : onSubmit ? (
         <Button
+          type="button"
           onClick={onSubmit}
           disabled={isSubmitting}
-          className="gradient-btn gradient-btn-primary disabled:opacity-50"
+          className="rounded-xl bg-[#111827] text-white hover:bg-[#1f2937] disabled:opacity-50"
         >
           {isSubmitting ? 'Creating...' : 'Create Assignment'}
         </Button>

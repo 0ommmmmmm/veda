@@ -1,105 +1,187 @@
 'use client'
 
+import { useMemo, useState } from 'react'
 import { Topbar } from '@/components/vedaai/Topbar'
 import { Button } from '@/components/ui/button'
+import { useSettingsStore } from '@/store/settings'
+import { toast } from '@/hooks/use-toast'
 
 export default function SettingsPage() {
+  const saved = useSettingsStore((s) => s.settings)
+  const updateSettings = useSettingsStore((s) => s.updateSettings)
+
+  const [teacherName, setTeacherName] = useState(saved.teacherName)
+  const [email, setEmail] = useState(saved.email)
+  const [schoolName, setSchoolName] = useState(saved.schoolName)
+  const [location, setLocation] = useState(saved.location)
+  const [notificationsEnabled, setNotificationsEnabled] = useState(
+    saved.notificationsEnabled
+  )
+  const [defaultDifficulty, setDefaultDifficulty] = useState(
+    saved.defaultDifficulty
+  )
+  const [defaultMarksPerQuestion, setDefaultMarksPerQuestion] = useState(
+    saved.defaultMarksPerQuestion
+  )
+
+  const canSave = useMemo(() => {
+    if (!teacherName.trim()) return false
+    if (!email.trim()) return false
+    if (!schoolName.trim()) return false
+    if (!location.trim()) return false
+    if (!Number.isFinite(defaultMarksPerQuestion) || defaultMarksPerQuestion <= 0)
+      return false
+    return true
+  }, [teacherName, email, schoolName, location, defaultMarksPerQuestion])
+
   return (
     <>
       <Topbar title="Settings" showBack={true} />
-      <div className="pt-28 px-8 pb-24">
-        <div className="max-w-2xl mx-auto space-y-6">
-          {/* Profile Preferences */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-            <h3 className="text-lg font-semibold text-black dark:text-white mb-4">Profile Preferences</h3>
-            <div className="space-y-4">
+      <div className="px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="rounded-3xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-[#111827] mb-4">
+              Profile settings
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
+                <label className="block text-sm font-medium text-[#111827] mb-2">
+                  Teacher name
+                </label>
                 <input
-                  type="text"
-                  defaultValue="John Doe"
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-black dark:text-white"
+                  value={teacherName}
+                  onChange={(e) => setTeacherName(e.target.value)}
+                  className="w-full rounded-xl border border-[#d1d5db] bg-white px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#f05a3c]"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                <label className="block text-sm font-medium text-[#111827] mb-2">
+                  Email
+                </label>
                 <input
                   type="email"
-                  defaultValue="john.doe@school.com"
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-black dark:text-white"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-xl border border-[#d1d5db] bg-white px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#f05a3c]"
                 />
               </div>
-            </div>
-          </div>
-
-          {/* School Information */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-            <h3 className="text-lg font-semibold text-black dark:text-white mb-4">School Information</h3>
-            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">School Name</label>
+                <label className="block text-sm font-medium text-[#111827] mb-2">
+                  School name
+                </label>
                 <input
-                  type="text"
-                  defaultValue="Delhi Public School"
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-black dark:text-white"
+                  value={schoolName}
+                  onChange={(e) => setSchoolName(e.target.value)}
+                  className="w-full rounded-xl border border-[#d1d5db] bg-white px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#f05a3c]"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Location</label>
+                <label className="block text-sm font-medium text-[#111827] mb-2">
+                  Location
+                </label>
                 <input
-                  type="text"
-                  defaultValue="Sector-4, Bokaro"
-                  className="w-full px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-black dark:text-white"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="w-full rounded-xl border border-[#d1d5db] bg-white px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#f05a3c]"
                 />
               </div>
             </div>
           </div>
 
-          {/* Notification Preferences */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-            <h3 className="text-lg font-semibold text-black dark:text-white mb-4">Notification Preferences</h3>
-            <div className="space-y-3">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" defaultChecked className="w-4 h-4" />
-                <span className="text-sm text-gray-700 dark:text-gray-300">Email notifications</span>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" defaultChecked className="w-4 h-4" />
-                <span className="text-sm text-gray-700 dark:text-gray-300">Assignment reminders</span>
-              </label>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4" />
-                <span className="text-sm text-gray-700 dark:text-gray-300">Marketing emails</span>
-              </label>
-            </div>
-          </div>
+          <div className="rounded-3xl border border-[#e5e7eb] bg-white p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-[#111827] mb-4">
+              App preferences
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex items-center justify-between rounded-2xl border border-[#e5e7eb] bg-[#fafafa] px-4 py-3">
+                <div>
+                  <p className="text-sm font-medium text-[#111827]">Notifications</p>
+                  <p className="text-xs text-[#6b7280]">Enable reminders and updates</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={notificationsEnabled}
+                  onChange={(e) => setNotificationsEnabled(e.target.checked)}
+                  className="h-4 w-4"
+                />
+              </div>
 
-          {/* Appearance */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
-            <h3 className="text-lg font-semibold text-black dark:text-white mb-4">Appearance</h3>
-            <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Theme</label>
-                <div className="flex gap-3">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="theme" defaultChecked className="w-4 h-4" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Light</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="theme" className="w-4 h-4" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Dark</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="theme" className="w-4 h-4" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">System</span>
-                  </label>
+                <label className="block text-sm font-medium text-[#111827] mb-2">
+                  Default difficulty
+                </label>
+                <select
+                  value={defaultDifficulty}
+                  onChange={(e) => setDefaultDifficulty(e.target.value as any)}
+                  className="w-full rounded-xl border border-[#d1d5db] bg-white px-3 py-2.5 text-sm text-[#111827] outline-none"
+                >
+                  <option value="Easy">Easy</option>
+                  <option value="Moderate">Moderate</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#111827] mb-2">
+                  Default marks per question
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  value={defaultMarksPerQuestion}
+                  onChange={(e) =>
+                    setDefaultMarksPerQuestion(Number(e.target.value || 0))
+                  }
+                  className="w-full rounded-xl border border-[#d1d5db] bg-white px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#f05a3c]"
+                />
+              </div>
+
+              <div className="rounded-2xl border border-[#e5e7eb] bg-[#fafafa] px-4 py-3">
+                <p className="text-sm font-medium text-[#111827]">Theme</p>
+                <p className="text-xs text-[#6b7280]">Light theme (recommended)</p>
+                <div className="mt-2 inline-flex rounded-xl border border-[#e5e7eb] bg-white p-1">
+                  <button
+                    type="button"
+                    className="rounded-lg px-3 py-1.5 text-xs font-medium bg-[#111827] text-white"
+                    disabled
+                  >
+                    Light
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded-lg px-3 py-1.5 text-xs font-medium text-[#6b7280]"
+                    disabled
+                  >
+                    Dark
+                  </button>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Save Button */}
-          <Button className="w-full gradient-btn gradient-btn-primary">Save Changes</Button>
+          <Button
+            type="button"
+            disabled={!canSave}
+            onClick={() => {
+              updateSettings({
+                teacherName: teacherName.trim(),
+                email: email.trim(),
+                schoolName: schoolName.trim(),
+                location: location.trim(),
+                notificationsEnabled,
+                defaultDifficulty,
+                defaultMarksPerQuestion,
+                theme: 'light',
+              })
+              toast({
+                title: 'Settings saved',
+                description: 'Your preferences have been updated.',
+              })
+            }}
+            className="w-full rounded-2xl bg-[#111827] text-white hover:bg-[#1f2937] disabled:opacity-50"
+          >
+            Save changes
+          </Button>
         </div>
       </div>
     </>

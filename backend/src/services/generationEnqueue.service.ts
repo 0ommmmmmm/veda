@@ -1,4 +1,4 @@
-import { addGenerationJob } from '../queues/generation.queue';
+import { addGenerationJob, hasActiveGenerationJob } from '../queues/generation.queue';
 import { emitGenerationEvent } from '../sockets/index';
 import { getAssignmentById } from './assignment.service';
 import {
@@ -29,6 +29,17 @@ export async function enqueueGeneration(
       `[generation] skip enqueue, already processing assignmentId=${assignmentId}`
     );
     return { ranSynchronously: false };
+  }
+
+  if (existing?.generationStatus === 'queued') {
+    const hasJob = await hasActiveGenerationJob(assignmentId);
+    if (hasJob) {
+      console.log(
+        `[generation] skip enqueue, already queued assignmentId=${assignmentId}`
+      );
+      return { ranSynchronously: false };
+    }
+    // If status says queued but there's no job, re-enqueue
   }
 
   console.log(`[generation] queued assignmentId=${assignmentId}`);

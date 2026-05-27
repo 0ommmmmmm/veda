@@ -21,15 +21,36 @@ export const generationQueue = new Queue<GenerationJobData>(GENERATION_QUEUE_NAM
 });
 
 export async function addGenerationJob(assignmentId: string): Promise<void> {
-  await generationQueue.add(
-    'generate',
-    { assignmentId },
-    { jobId: `generation-${assignmentId}` }
+  const jobId = `generate-${assignmentId}`;
+  const existing = await generationQueue.getJob(jobId);
+  if (existing) {
+    const state = await existing.getState().catch(() => 'unknown');
+    // If a job is already waiting/active/delayed, don't enqueue duplicates
+    if (state !== 'completed' && state !== 'failed') {
+      return;
+    }
+  }
+
+  await generationQueue.add('generate', { assignmentId }, { jobId });
+}
+
+export async function hasActiveGenerationJob(
+  assignmentId: string
+): Promise<boolean> {
+  const jobId = `generate-${assignmentId}`;
+  const job = await generationQueue.getJob(jobId);
+  if (!job) return false;
+  const state = await job.getState().catch(() => 'unknown');
+  return (
+    state === 'active' ||
+    state === 'waiting' ||
+    state === 'delayed' ||
+    state === 'waiting-children'
   );
 }
 
 export async function removeGenerationJob(assignmentId: string): Promise<void> {
-  const jobId = `generation-${assignmentId}`;
+  const jobId = `generate-${assignmentId}`;
   const job = await generationQueue.getJob(jobId);
   if (job) {
     await job.remove();

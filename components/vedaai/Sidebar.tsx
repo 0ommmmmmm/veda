@@ -1,13 +1,22 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { motion } from 'framer-motion'
-import { BookOpen, Home, Users, Lightbulb, Library, Settings, Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { usePathname, useRouter } from 'next/navigation'
+import {
+  BookOpen,
+  Home,
+  Users,
+  Lightbulb,
+  Library,
+  Settings,
+  Plus,
+} from 'lucide-react'
+import { useSettingsStore } from '@/store/settings'
 
 export function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+  const settings = useSettingsStore((s) => s.settings)
 
   const navItems = [
     { label: 'Home', href: '/assignments', icon: Home },
@@ -18,78 +27,84 @@ export function Sidebar() {
     { label: 'Settings', href: '/settings', icon: Settings },
   ]
 
-  const isActive = (href: string) => pathname === href || pathname.startsWith(href)
-
-  const sidebarVariants = {
-    hidden: { x: -100, opacity: 0 },
-    visible: { x: 0, opacity: 1, transition: { duration: 0.4, ease: 'easeOut' as const } },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: { delay: i * 0.05, duration: 0.3, ease: 'easeOut' as const },
-    }),
-  }
+  const isActive = (href: string) =>
+    href !== '#' && (pathname === href || pathname.startsWith(href))
 
   return (
-    <motion.aside
-      initial="hidden"
-      animate="visible"
-      variants={sidebarVariants}
-      className="fixed left-4 top-4 bottom-4 w-64 flex flex-col z-50 bg-white rounded-3xl shadow-lg p-6 dark:bg-gray-800"
-    >
-      {/* Logo */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3">
-          {/* Orange-red gradient square icon */}
-          <div className="w-10 h-10 bg-gradient-to-br from-[#f05a3c] to-[#d64828] rounded-lg flex items-center justify-center shadow-md">
+    <>
+      <aside className="hidden lg:flex fixed left-4 top-4 bottom-4 w-72 flex-col z-40 rounded-3xl bg-white shadow-sm border border-[#eef0f3] p-6">
+        <div className="mb-8 flex items-center gap-3">
+          <div className="w-10 h-10 bg-[#f05a3c] rounded-xl flex items-center justify-center">
             <BookOpen className="w-5 h-5 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-black dark:text-white">
-            VedaAI
-          </h1>
+          <h1 className="text-xl font-semibold text-[#111827]">VedaAI</h1>
         </div>
-      </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 space-y-1 overflow-y-auto">
-        {navItems.map((item, i) => {
-          const Icon = item.icon
-          const active = isActive(item.href)
-          return (
-            <motion.div key={item.label} custom={i} variants={itemVariants} initial="hidden" animate="visible">
-              <Link href={item.href}>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-left transition-all duration-200 ${
+        <button
+          type="button"
+          onClick={() => {
+            console.log('[mobile] create assignment clicked')
+            router.push('/create')
+          }}
+          className="mb-6 flex items-center justify-center gap-2 rounded-2xl bg-[#111827] px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#1f2937] w-full"
+        >
+          <Plus className="w-4 h-4" />
+          Create Assignment
+        </button>
+
+        <nav className="flex-1 space-y-1">
+          {navItems.map((item) => {
+            const Icon = item.icon
+            const active = isActive(item.href)
+            return (
+              <Link key={item.label} href={item.href}>
+                <div
+                  className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors ${
                     active
-                      ? 'bg-gray-200 text-black dark:bg-gray-700 dark:text-white font-medium'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                      ? 'bg-[#f3f4f6] text-[#111827] font-medium'
+                      : 'text-[#4b5563] hover:bg-[#f9fafb]'
                   }`}
                 >
-                  <Icon className="w-4 h-4 flex-shrink-0" />
-                  <span className="text-sm font-medium">{item.label}</span>
-                </motion.button>
+                  <Icon className="w-4 h-4" />
+                  <span>{item.label}</span>
+                </div>
               </Link>
-            </motion.div>
-          )
-        })}
-      </nav>
+            )
+          })}
+        </nav>
 
-      {/* School Profile Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.3, ease: 'easeOut' as const }}
-        className="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-2xl"
-      >
-        <p className="text-sm font-semibold text-black dark:text-white">Delhi Public School</p>
-        <p className="text-xs text-gray-600 dark:text-gray-400">Bokaro Steel City</p>
-      </motion.div>
-    </motion.aside>
+        <div className="rounded-2xl bg-[#f8fafc] border border-[#e5e7eb] p-4">
+          <p className="text-sm font-semibold text-[#111827]">{settings.schoolName}</p>
+          <p className="text-xs text-[#6b7280]">{settings.location}</p>
+        </div>
+      </aside>
+
+      <nav className="lg:hidden fixed bottom-3 left-3 right-3 z-40 rounded-2xl border border-[#e5e7eb] bg-white/95 backdrop-blur p-2 shadow-lg">
+        <div className="grid grid-cols-5 gap-1">
+          {[
+            { label: 'Home', href: '/assignments', icon: Home },
+            { label: 'Groups', href: '/groups', icon: Users },
+            { label: 'Assign', href: '/assignments', icon: BookOpen },
+            { label: 'Toolkit', href: '#', icon: Lightbulb },
+            { label: 'Settings', href: '/settings', icon: Settings },
+          ].map((item) => {
+            const Icon = item.icon
+            const active = isActive(item.href)
+            return (
+              <Link key={item.label} href={item.href}>
+                <div
+                  className={`flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[11px] ${
+                    active ? 'text-[#f05a3c] bg-[#fff7f4]' : 'text-[#6b7280]'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{item.label}</span>
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+      </nav>
+    </>
   )
 }

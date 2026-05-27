@@ -62,6 +62,7 @@ export function CreateAssignmentForm() {
   }
 
   const handleAddQuestionType = () => {
+    console.log('[mobile] add question type clicked')
     setQuestionTypes([
       ...questionTypes,
       {
@@ -118,19 +119,24 @@ export function CreateAssignmentForm() {
   return (
     <>
       <Topbar title="Create Assignment" showBack={true} />
-      <div className="pt-20 px-8 pb-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="glass-card p-8">
+      <div className="px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="rounded-3xl border border-[#e5e7eb] bg-white shadow-sm p-6 sm:p-8">
+            <h1 className="text-2xl font-semibold text-[#111827] mb-6">
+              Create Assignment
+            </h1>
             {/* Title Section */}
             <div className="mb-8">
-              <label className="block text-sm font-medium text-foreground mb-3">
+              <label className="block text-sm font-medium text-[#111827] mb-2">
                 Assignment Title
               </label>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Mathematics Final Exam"
-                className={`glass-input ${errors.title ? 'border-red-500' : ''}`}
+                className={`rounded-xl border-[#d1d5db] bg-white ${
+                  errors.title ? 'border-red-500' : ''
+                }`}
               />
               {errors.title && (
                 <p className="text-xs text-red-500 mt-2">{errors.title}</p>
@@ -139,7 +145,7 @@ export function CreateAssignmentForm() {
 
             {/* File Upload */}
             <div className="mb-8">
-              <label className="block text-sm font-medium text-foreground mb-3">
+              <label className="block text-sm font-medium text-[#111827] mb-2">
                 Upload Question Paper (Optional)
               </label>
               <FileUploadBox onFileSelect={() => {}} />
@@ -158,10 +164,10 @@ export function CreateAssignmentForm() {
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground">
+                  <h3 className="text-lg font-semibold text-[#111827]">
                     Question Types
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-[#6b7280]">
                     Configure the types and distribution of questions
                   </p>
                 </div>
@@ -180,8 +186,13 @@ export function CreateAssignmentForm() {
 
               <Button
                 variant="outline"
-                onClick={handleAddQuestionType}
-                className="border-border text-foreground hover:bg-secondary gap-2 w-full mb-4"
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  handleAddQuestionType()
+                }}
+                className="border-[#d1d5db] text-[#111827] hover:bg-[#f9fafb] gap-2 w-full mb-4 rounded-xl"
               >
                 <span>+</span>
                 Add Question Type
@@ -193,9 +204,9 @@ export function CreateAssignmentForm() {
 
               {/* Summary */}
               {questionTypes.length > 0 && (
-                <div className="bg-secondary rounded-lg p-4">
-                  <p className="text-sm text-foreground font-medium">Summary:</p>
-                  <p className="text-sm text-muted-foreground mt-1">
+                <div className="bg-[#f8fafc] rounded-xl p-4 border border-[#e5e7eb]">
+                  <p className="text-sm text-[#111827] font-medium">Summary:</p>
+                  <p className="text-sm text-[#6b7280] mt-1">
                     Total Questions:{' '}
                     <span className="font-semibold">
                       {questionTypes.reduce((sum, qt) => sum + qt.count, 0)}
@@ -221,7 +232,7 @@ export function CreateAssignmentForm() {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="border-t border-border pt-6">
+            <div className="border-t border-[#e5e7eb] pt-6">
               {storeError && (
                 <p className="text-xs text-red-500 mb-4">{storeError}</p>
               )}

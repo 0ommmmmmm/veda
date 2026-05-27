@@ -136,18 +136,23 @@ src/
 Set in `.env`:
 
 ```env
-AI_PROVIDER=openai
-OPENAI_API_KEY=sk-your-key-here
-OPENAI_MODEL=gpt-4o-mini
+AI_PROVIDER=groq
+GROQ_API_KEY=your-groq-api-key
+GROQ_MODEL=llama-3.1-8b-instant
 ```
 
-| `AI_PROVIDER` | `OPENAI_API_KEY` | Behavior |
+| `AI_PROVIDER` | `GROQ_API_KEY` | Behavior |
 |---------------|------------------|----------|
 | `mock` | any | Always uses mock templates |
-| `openai` | set | OpenAI generates structured JSON, validated with Zod |
-| `openai` | empty | Falls back to mock (safe default) |
+| `groq` | set | Groq generates structured JSON, validated with Zod |
+| `groq` | empty | Falls back to mock (safe default) |
 
-On startup the server logs the active generation mode.
+Setup steps:
+
+1. Get a free Groq API key from [Groq Console](https://console.groq.com/keys).
+2. Add `GROQ_API_KEY` to `backend/.env`.
+3. Restart the backend.
+4. Confirm startup log says `Question generation mode: groq (llama-3.1-8b-instant)`.
 
 ## Notes
 

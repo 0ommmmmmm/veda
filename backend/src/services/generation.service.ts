@@ -12,14 +12,14 @@ export async function generateQuestionPaper(
     try {
       const paper = await generateAiQuestionPaper(assignment);
       console.log(
-        `[generation] AI question paper created for assignment ${assignment._id.toString()}`
+        `[generation] Groq question paper created for assignment ${assignment._id.toString()}`
       );
       return paper;
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'AI generation failed';
+        error instanceof Error ? error.message : 'Groq generation failed';
       console.warn(
-        `[generation] AI failed, falling back to mock: ${message}`
+        `[generation] Groq failed, falling back to mock: ${message}`
       );
     }
   }

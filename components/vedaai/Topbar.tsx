@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
-import { ChevronLeft, Bell, User } from 'lucide-react'
+import { ChevronLeft, Bell, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useSettingsStore } from '@/store/settings'
 
 interface TopbarProps {
   title?: string
@@ -13,68 +13,61 @@ interface TopbarProps {
 
 export function Topbar({ title, showBack = false }: TopbarProps) {
   const router = useRouter()
+  const settings = useSettingsStore((s) => s.settings)
 
-  const topbarVariants = {
-    hidden: { y: -50, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: 'easeOut' as const } },
-  }
+  const initials = settings.teacherName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((p) => p[0]!.toUpperCase())
+    .join('')
 
   return (
-    <motion.header
-      initial="hidden"
-      animate="visible"
-      variants={topbarVariants}
-      className="fixed top-4 left-80 right-4 h-16 bg-white dark:bg-gray-800 rounded-full shadow-lg flex items-center justify-between px-8 z-40"
-    >
+    <header className="fixed top-4 left-4 right-4 lg:left-[20rem] z-30 lg:z-40">
+      <div className="h-16 rounded-2xl border border-[#e5e7eb] bg-white shadow-sm px-4 lg:px-6 flex items-center justify-between">
       <div className="flex items-center gap-4">
         {showBack && (
-          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => router.back()}
-              className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </Button>
-          </motion.div>
-        )}
-        {title && (
-          <motion.h2
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.3 }}
-            className="text-lg font-semibold text-black dark:text-white"
-          >
-            {title}
-          </motion.h2>
-        )}
-      </div>
-
-      <div className="flex items-center gap-4">
-        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
           <Button
             variant="ghost"
             size="icon"
-            className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all relative"
+            onClick={() => router.back()}
+            className="rounded-xl text-[#4b5563] hover:bg-[#f3f4f6]"
           >
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+            <ChevronLeft className="w-5 h-5" />
           </Button>
-        </motion.div>
+        )}
+        {title && <h2 className="text-base lg:text-lg font-semibold text-[#111827]">{title}</h2>}
+      </div>
+
+      <div className="hidden md:flex items-center gap-3 rounded-xl border border-[#e5e7eb] bg-[#f9fafb] px-3 py-2 min-w-[240px]">
+        <Search className="w-4 h-4 text-[#9ca3af]" />
+        <input
+          placeholder="Search"
+          className="bg-transparent text-sm outline-none text-[#374151] placeholder:text-[#9ca3af] w-full"
+        />
+      </div>
+
+      <div className="flex items-center gap-3">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-xl text-[#4b5563] hover:bg-[#f3f4f6] relative"
+        >
+          <Bell className="w-5 h-5" />
+          <span className="absolute top-3 right-3 w-2 h-2 bg-[#f05a3c] rounded-full" />
+        </Button>
         <Link href="/profile">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-          >
+          <button className="flex items-center gap-2 rounded-xl border border-[#e5e7eb] px-2.5 py-1.5 hover:bg-[#f9fafb] transition-colors">
             <div className="w-8 h-8 bg-[#f05a3c] rounded-lg flex items-center justify-center text-white text-xs font-semibold">
-              JD
+              {initials || 'JD'}
             </div>
-            <span className="text-sm font-medium text-black dark:text-white">John Doe</span>
-          </motion.button>
+            <span className="hidden sm:inline text-sm font-medium text-[#111827]">
+              {settings.teacherName}
+            </span>
+          </button>
         </Link>
       </div>
-    </motion.header>
+      </div>
+    </header>
   )
 }
